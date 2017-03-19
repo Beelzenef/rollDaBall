@@ -6,6 +6,8 @@ public class ControladorJugador : MonoBehaviour {
     public float velocidad;
     int contador;
     int nItems;
+    int alturaSalto;
+    bool contactoConOtroObjeto;
 
     Rigidbody cuerpoRigido;
     Vector3 definirMovimiento;
@@ -18,6 +20,8 @@ public class ControladorJugador : MonoBehaviour {
         cuerpoRigido = GetComponent<Rigidbody>();
         contador = 0;
         nItems = 4;
+        alturaSalto = 300;
+        contactoConOtroObjeto = false;
         ActualizarMarcador();
 
         // Desactivando el mensaje de final
@@ -32,9 +36,19 @@ public class ControladorJugador : MonoBehaviour {
 
         definirMovimiento = new Vector3(movHorizontal, 0, movVertical);
 
+        if (Input.GetKeyDown(KeyCode.Space) && contactoConOtroObjeto)
+        {
+            cuerpoRigido.AddForce(Vector3.up * alturaSalto);
+        }
+        contactoConOtroObjeto = false;
         cuerpoRigido.AddForce(definirMovimiento * velocidad);
     }
-	
+
+    void OnCollisionStay()
+    {
+        contactoConOtroObjeto = true;
+    }
+
     // Cada vez que entre en un Collider IsTriggered
     public void OnTriggerEnter(Collider objetoEnColision)
     {
